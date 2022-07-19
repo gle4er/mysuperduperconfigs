@@ -39,7 +39,7 @@ syntax enable
 " vim-theming
 set termguicolors
 set background=dark
-colorscheme tender
+colorscheme gruvbox
 
 " GVim gui toggling
 function! ToggleGUICruft()
@@ -55,23 +55,25 @@ set guioptions=i
 " Vundle plugins
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'majutsushi/tagbar'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'ctrlp.vim'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'mhinz/vim-signify'
-Plugin 'fugitive.vim'
-Plugin 'bkad/CamelCaseMotion'
-Plugin 'jpalardy/vim-slime'
-Plugin 'neomake/neomake'
-Plugin 'pearofducks/ansible-vim'
-Plugin 'skywind3000/asyncrun.vim'
-Plugin 'mcchrish/nnn.vim'
+    Plugin 'VundleVim/Vundle.vim'
+    Plugin 'Valloric/YouCompleteMe'
+    Plugin 'scrooloose/nerdcommenter'
+    Plugin 'majutsushi/tagbar'
+    Plugin 'vim-airline/vim-airline'
+    Plugin 'vim-airline/vim-airline-themes'
+    Plugin 'ctrlp.vim'
+    Plugin 'airblade/vim-gitgutter'
+    Plugin 'mhinz/vim-signify'
+    Plugin 'fugitive.vim'
+    Plugin 'bkad/CamelCaseMotion'
+    Plugin 'jpalardy/vim-slime'
+    Plugin 'neomake/neomake'
+    Plugin 'pearofducks/ansible-vim'
+    Plugin 'skywind3000/asyncrun.vim'
+    Plugin 'mcchrish/nnn.vim'
+    Plugin 'preservim/nerdtree'
+    Plugin 'rodjek/vim-puppet'
+    Plugin 'iamcco/markdown-preview.nvim'
 call vundle#end()
 
 " let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
@@ -97,6 +99,13 @@ nmap , <c-e>
 nmap . <c-y>
 nnoremap <F3> :set hlsearch!<CR>
 
+" YouCompleteMe (YCM) configuration
+let g:ycm_collect_identifiers_from_tags_files = 1 " Let YCM read tags from Ctags file
+let g:ycm_use_ultisnips_completer = 1 " Default 1, just ensure
+let g:ycm_seed_identifiers_with_syntax = 1 " Completion for programming language's keyword
+let g:ycm_complete_in_comments = 1 " Completion in comments
+let g:ycm_complete_in_strings = 1 " Completion in string
+
 " camelCase motion
 call camelcasemotion#CreateMotionMappings('<leader>')
 
@@ -104,9 +113,9 @@ call camelcasemotion#CreateMotionMappings('<leader>')
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/venv/*
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](venv|lint)',
   \ 'file': '\v\.(exe|so|dll)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
@@ -150,10 +159,10 @@ let g:airline_mode_map = {
       \ 'c'  : 'C',
       \ 'v'  : 'V',
       \ 'V'  : 'V',
-      \ '' : 'V',
+      \ '' : 'V',
       \ 's'  : 'S',
       \ 'S'  : 'S',
-      \ '' : 'S',
+      \ '' : 'S',
       \ }
 
 " slime
@@ -166,7 +175,7 @@ call neomake#configure#automake('rw', 1000)
 call neomake#configure#automake('nrwi', 500)
 
 " async ctags
-nnoremap <F3> :AsyncRun ctags -R<CR>
+nnoremap <F4> :AsyncRun ctags -R<CR>
 
 " nnn
 nnoremap <leader>n :NnnPicker '%:p:h'<CR>
@@ -176,3 +185,14 @@ let g:nnn#action = {
       \ '<c-z>': 'split',
       \ '<c-e>': 'e',
       \ '<c-c>': 'vsplit' }
+
+" nerdtree
+nnoremap <leader>t :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggleVCS<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" markdown preview
+nmap <C-s> <Plug>MarkdownPreview
+nmap <M-s> <Plug>MarkdownPreviewStop
+nmap <C-p> <Plug>MarkdownPreviewToggle
