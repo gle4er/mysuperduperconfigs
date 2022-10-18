@@ -17,11 +17,11 @@ set magic
 set shiftwidth=4
 set tabstop=4
 set wildignore=*.o,*~,*.pyc
-set history=700		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
+set history=700         " keep 50 lines of command line history
+set ruler               " show the cursor position all the time
 set cursorline
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
+set showcmd             " display incomplete commands
+set incsearch           " do incremental searching
 set langmap=!\\"№\\;%?*ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;!@#$%&*`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
 inoremap <C-U> <C-G>u<C-U>
 "set guifont=FuraCode\ Nerd\ Font\ Light:h16
@@ -56,7 +56,7 @@ set guioptions=i
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
     Plugin 'VundleVim/Vundle.vim'
-    Plugin 'Valloric/YouCompleteMe'
+    "Plugin 'Valloric/YouCompleteMe'
     Plugin 'scrooloose/nerdcommenter'
     Plugin 'majutsushi/tagbar'
     Plugin 'vim-airline/vim-airline'
@@ -67,13 +67,15 @@ call vundle#begin()
     Plugin 'fugitive.vim'
     Plugin 'bkad/CamelCaseMotion'
     Plugin 'jpalardy/vim-slime'
-    Plugin 'neomake/neomake'
+    "Plugin 'neomake/neomake'
     Plugin 'pearofducks/ansible-vim'
-    Plugin 'skywind3000/asyncrun.vim'
+    "Plugin 'skywind3000/asyncrun.vim'
     Plugin 'mcchrish/nnn.vim'
     Plugin 'preservim/nerdtree'
     Plugin 'rodjek/vim-puppet'
     Plugin 'iamcco/markdown-preview.nvim'
+    Plugin 'udalov/kotlin-vim'
+    Plugin 'dense-analysis/ale'
 call vundle#end()
 
 " let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
@@ -159,23 +161,35 @@ let g:airline_mode_map = {
       \ 'c'  : 'C',
       \ 'v'  : 'V',
       \ 'V'  : 'V',
-      \ '' : 'V',
+      \ '' : 'V',
       \ 's'  : 'S',
       \ 'S'  : 'S',
-      \ '' : 'S',
+      \ '' : 'S',
       \ }
 
 " slime
 let g:slime_target = "vimterminal"
 
 " neomake
-call neomake#configure#automake('w')
-call neomake#configure#automake('nw', 750)
-call neomake#configure#automake('rw', 1000)
-call neomake#configure#automake('nrwi', 500)
+"call neomake#configure#automake('w')
+"call neomake#configure#automake('nw', 750)
+"call neomake#configure#automake('rw', 1000)
+"call neomake#configure#automake('nrwi', 500)
 
-" async ctags
-nnoremap <F4> :AsyncRun ctags -R<CR>
+"function! MyOnBattery()
+  "if has('macunix')
+    "return match(system('pmset -g batt'), "Now drawing from 'Battery Power'") != -1
+  "elseif has('unix')
+    "return readfile('/sys/class/power_supply/AC/online') == ['0']
+  "endif
+  "return 0
+"endfunction
+
+"if MyOnBattery()
+  "call neomake#configure#automake('w')
+"else
+  "call neomake#configure#automake('nw', 1000)
+"endif
 
 " nnn
 nnoremap <leader>n :NnnPicker '%:p:h'<CR>
@@ -196,3 +210,29 @@ nnoremap <C-f> :NERDTreeFind<CR>
 nmap <C-s> <Plug>MarkdownPreview
 nmap <M-s> <Plug>MarkdownPreviewStop
 nmap <C-p> <Plug>MarkdownPreviewToggle
+
+" ALE
+let g:ale_completion_enabled = 1
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<TAB>"
+
+let g:ale_linters = {'python': 'all'}
+let g:ale_linters_ignore = {'python': ['pydocstyle']}
+let g:ale_fixers = {'python': ['black', 'isort', 'yapf', 'remove_trailing_lines', 'trim_whitespace']}
+
+let g:ale_floating_preview = 1
+let g:ale_hover_to_floating_preview = 1
+let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
+augroup ale_hover_cursor
+  autocmd!
+  autocmd CursorHold * ALEHover
+augroup END
+
+let g:ale_lsp_suggestions = 1
+let g:ale_go_gofmt_options = '-s'
+let g:ale_go_gometalinter_options = '— enable=gosimple — enable=staticcheck'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] [%severity%] %code: %%s'
+
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
